@@ -197,43 +197,18 @@ class RubixCube:
 
     def turn_right_side(self, clockwise):
 
-        for i in range(3):
-            front = self.front_face.face_color
-            back = self.back_face.face_color
-            top = self.top_face.face_color
-            bottom = self.bottom_face.face_color
+        front = self.front_face.face_color
+        back = self.back_face.face_color
+        top = self.top_face.face_color
+        bottom = self.bottom_face.face_color
        
        
-            back_up_right = self.get_piece_color(back, 0, 2)
-            back_middle_right = self.get_piece_color(back, 1, 2)
-            back_down_right = self.get_piece_color(back, 2, 2)
-            
-            #top to back
-            self.set_piece_color(back, 0, 2, self.get_piece_color(top, 0, 2))
-            self.set_piece_color(back, 1, 2, self.get_piece_color(top, 1, 2))
-            self.set_piece_color(back, 2, 2, self.get_piece_color(top, 2, 2))
-
-            #front to top
-            self.set_piece_color(top, 0, 2, self.get_piece_color(front, 0, 2))
-            self.set_piece_color(top, 1, 2, self.get_piece_color(front, 1, 2))
-            self.set_piece_color(top, 2, 2, self.get_piece_color(front, 2, 2))
-
-            #bottom to front
-            self.set_piece_color(front, 0, 2, self.get_piece_color(bottom, 0, 2))
-            self.set_piece_color(front, 1, 2, self.get_piece_color(bottom, 1, 2))
-            self.set_piece_color(front, 2, 2, self.get_piece_color(bottom, 2, 2))
-
-            #back to bottom
-            self.set_piece_color(bottom, 0, 2, back_up_right)
-            self.set_piece_color(bottom, 1, 2, back_middle_right)
-            self.set_piece_color(bottom, 2, 2, back_down_right)
-            
-            if clockwise:
-                return
+        back_up_right = self.get_piece_color(back, 0, 2)
+        back_middle_right = self.get_piece_color(back, 1, 2)
+        back_down_right = self.get_piece_color(back, 2, 2)
 
 
     def turn_top_side(self, clockwise):
-        
         for i in range(3):
             left = self.left_face.face_color
             front = self.front_face.face_color
@@ -241,32 +216,31 @@ class RubixCube:
             right = self.right_face.face_color
 
             top_left = self.get_piece_color(front, 0, 0)
-            mid_left = self.get_piece_color(front, 1, 0)
-            bottom_left = self.get_piece_color(front, 2, 0)
+            top_mid = self.get_piece_color(front, 0, 1)
+            top_right = self.get_piece_color(front, 0, 2)
 
-            #move top to front
-            self.set_piece_color(front, 0, 0, self.get_piece_color(top, 0, 0))
-            self.set_piece_color(front, 1, 0, self.get_piece_color(top, 1, 0))
-            self.set_piece_color(front, 2, 0, self.get_piece_color(top, 2, 0))
+            #move left to front
+            self.set_piece_color(front, 0, 0, self.get_piece_color(left, 0, 0))
+            self.set_piece_color(front, 0, 1, self.get_piece_color(left, 0, 1))
+            self.set_piece_color(front, 0, 2, self.get_piece_color(left, 0, 2))
 
-            #move back to top
-            self.set_piece_color(top, 0, 0, self.get_piece_color(back, 0, 0))
-            self.set_piece_color(top, 1, 0, self.get_piece_color(back, 1, 0))
-            self.set_piece_color(top, 2, 0, self.get_piece_color(back, 2, 0))
+            #move back to left
+            self.set_piece_color(left, 0, 0, self.get_piece_color(back, 2, 2))
+            self.set_piece_color(left, 0, 1, self.get_piece_color(back, 2, 1))
+            self.set_piece_color(left, 0, 2, self.get_piece_color(back, 2, 0))
 
-            #move bottom to back
-            self.set_piece_color(back, 0, 0, self.get_piece_color(bottom, 0, 0))
-            self.set_piece_color(back, 1, 0, self.get_piece_color(bottom, 1, 0))
-            self.set_piece_color(back, 2, 0, self.get_piece_color(bottom, 2, 0))
+            #move right to back
+            self.set_piece_color(back, 2, 0, self.get_piece_color(right, 0, 2))
+            self.set_piece_color(back, 2, 1, self.get_piece_color(right, 0, 1))
+            self.set_piece_color(back, 2, 2, self.get_piece_color(right, 0, 0))
 
-            #move front to bottom
-            self.set_piece_color(bottom, 0, 0, top_left)
-            self.set_piece_color(bottom, 1, 0, mid_left)
-            self.set_piece_color(bottom, 2, 0, bottom_left)
+            #move front to right
+            self.set_piece_color(right, 0, 0, top_left)
+            self.set_piece_color(right, 0, 1, top_mid)
+            self.set_piece_color(right, 0, 2, top_right)
 
-            if clockwise:
+            if not clockwise:
                 return
-
     def turn_bottom_side(self, clockwise):
         pass
 
@@ -355,7 +329,7 @@ class Piece:
 
 rubix = RubixCube()
 #rubix.set_piece_color(FaceNum.ORANGE, 1, 1, "Red")
-rubix.turn_right_side(False)
+rubix.turn_top_side(True)
 print(rubix)
 #rubix.turn_side(Side.FRONT, True)
 #rubix.turn_side(Side.FRONT, True)
