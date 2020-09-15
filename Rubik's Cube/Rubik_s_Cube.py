@@ -99,12 +99,12 @@ class RubixCube:
             left = self.left_face.face_color
             right = self.right_face.face_color
             bottom = self.bottom_face.face_color
-        
+       
             # temporary storage for right side pieces        
             right_up_left = self.get_piece_color(right, 0, 0)
             right_mid_left = self.get_piece_color(right, 1, 0)
             right_down_left = self.get_piece_color(right, 2, 0)
-        
+       
             #assigns right pieces from top pieces
             self.set_piece_color(right, 0, 0, self.get_piece_color(top, 2, 0))
             self.set_piece_color(right, 1, 0, self.get_piece_color(top, 2, 1))
@@ -119,63 +119,128 @@ class RubixCube:
             self.set_piece_color(left, 2, 2, self.get_piece_color(bottom, 0, 2))
             self.set_piece_color(left, 1, 2, self.get_piece_color(bottom, 0, 1))
             self.set_piece_color(left, 0, 2, self.get_piece_color(bottom, 0, 0))
-        
+       
             #assigns bottom pieces from temporary right pieces
             self.set_piece_color(self.bottom_face.face_color, 0, 2, right_up_left)
             self.set_piece_color(self.bottom_face.face_color, 0, 1, right_mid_left)
             self.set_piece_color(self.bottom_face.face_color, 0, 0, right_down_left)
-            
+           
             if clockwise:
                 return
-       
+
     def turn_back_side(self, clockwise):
-        top = self.top_face.face_color
-        left = self.left_face.face_color
-        right = self.right_face.face_color
-        bottom = self.bottom_face.face_color
+        for i in range(3):
+            top = self.top_face.face_color
+            left = self.left_face.face_color
+            right = self.right_face.face_color
+            bottom = self.bottom_face.face_color
 
-        top_left = self.get_piece_color(top, 0, 0)
-        top_mid = self.get_piece_color(top, 0, 1)
-        top_right = self.get_piece_color(top, 0, 2)
-        #move right to top
-        self.set_piece_color(top, 0, 0, self.get_piece_color(right, 0, 2))
-        self.set_piece_color(top, 0, 1, self.get_piece_color(right, 1, 2))
-        self.set_piece_color(top, 0, 2, self.get_piece_color(right, 2, 2))
+            top_left = self.get_piece_color(top, 0, 0)
+            top_mid = self.get_piece_color(top, 0, 1)
+            top_right = self.get_piece_color(top, 0, 2)
+            #move right to top
+            self.set_piece_color(top, 0, 0, self.get_piece_color(right, 0, 2))
+            self.set_piece_color(top, 0, 1, self.get_piece_color(right, 1, 2))
+            self.set_piece_color(top, 0, 2, self.get_piece_color(right, 2, 2))
 
-        #move bottom to right
-        self.set_piece_color(right, 0, 2, self.get_piece_color(bottom, 2, 2))
-        self.set_piece_color(right, 1, 2, self.get_piece_color(bottom, 2, 1))
-        self.set_piece_color(right, 2, 2, self.get_piece_color(bottom, 2, 0))
+            #move bottom to right
+            self.set_piece_color(right, 0, 2, self.get_piece_color(bottom, 2, 2))
+            self.set_piece_color(right, 1, 2, self.get_piece_color(bottom, 2, 1))
+            self.set_piece_color(right, 2, 2, self.get_piece_color(bottom, 2, 0))
 
-        #move left to bottom
-        self.set_piece_color(bottom, 2, 0, self.get_piece_color(left, 0, 0))
-        self.set_piece_color(bottom, 2, 1, self.get_piece_color(left, 1, 0))
-        self.set_piece_color(bottom, 2, 2, self.get_piece_color(left, 2, 0))
+            #move left to bottom
+            self.set_piece_color(bottom, 2, 0, self.get_piece_color(left, 0, 0))
+            self.set_piece_color(bottom, 2, 1, self.get_piece_color(left, 1, 0))
+            self.set_piece_color(bottom, 2, 2, self.get_piece_color(left, 2, 0))
 
-        #move top to left
-        self.set_piece_color(left, 0, 0, top_right)
-        self.set_piece_color(left, 1, 0, top_mid)
-        self.set_piece_color(left, 2, 0, top_left)
+            #move top to left
+            self.set_piece_color(left, 0, 0, top_right)
+            self.set_piece_color(left, 1, 0, top_mid)
+            self.set_piece_color(left, 2, 0, top_left)
+
+            if clockwise:
+                return
         
     def turn_left_side(self, clockwise):
-        pass
+        for i in range(3):
+            top = self.top_face.face_color
+            front = self.front_face.face_color
+            back = self.back_face.face_color
+            bottom = self.bottom_face.face_color
+
+            top_left = self.get_piece_color(front, 0, 0)
+            mid_left = self.get_piece_color(front, 1, 0)
+            bottom_left = self.get_piece_color(front, 2, 0)
+
+            #move top to front
+            self.set_piece_color(front, 0, 0, self.get_piece_color(top, 0, 0))
+            self.set_piece_color(front, 1, 0, self.get_piece_color(top, 1, 0))
+            self.set_piece_color(front, 2, 0, self.get_piece_color(top, 2, 0))
+
+            #move back to top
+            self.set_piece_color(top, 0, 0, self.get_piece_color(back, 0, 0))
+            self.set_piece_color(top, 1, 0, self.get_piece_color(back, 1, 0))
+            self.set_piece_color(top, 2, 0, self.get_piece_color(back, 2, 0))
+
+            #move bottom to back
+            self.set_piece_color(back, 0, 0, self.get_piece_color(bottom, 0, 0))
+            self.set_piece_color(back, 1, 0, self.get_piece_color(bottom, 1, 0))
+            self.set_piece_color(back, 2, 0, self.get_piece_color(bottom, 2, 0))
+
+            #move front to bottom
+            self.set_piece_color(bottom, 0, 0, top_left)
+            self.set_piece_color(bottom, 1, 0, mid_left)
+            self.set_piece_color(bottom, 2, 0, bottom_left)
+
+            if clockwise:
+                return
+
     def turn_right_side(self, clockwise):
 
         front = self.front_face.face_color
         back = self.back_face.face_color
         top = self.top_face.face_color
         bottom = self.bottom_face.face_color
-        
-        
+       
+       
         back_up_right = self.get_piece_color(back, 0, 2)
         back_middle_right = self.get_piece_color(back, 1, 2)
         back_down_right = self.get_piece_color(back, 2, 2)
 
 
-
-
     def turn_top_side(self, clockwise):
-        pass
+        for i in range(3):
+            left = self.left_face.face_color
+            front = self.front_face.face_color
+            back = self.back_face.face_color
+            right = self.right_face.face_color
+
+            top_left = self.get_piece_color(front, 0, 0)
+            mid_left = self.get_piece_color(front, 1, 0)
+            bottom_left = self.get_piece_color(front, 2, 0)
+
+            #move top to front
+            self.set_piece_color(front, 0, 0, self.get_piece_color(top, 0, 0))
+            self.set_piece_color(front, 1, 0, self.get_piece_color(top, 1, 0))
+            self.set_piece_color(front, 2, 0, self.get_piece_color(top, 2, 0))
+
+            #move back to top
+            self.set_piece_color(top, 0, 0, self.get_piece_color(back, 0, 0))
+            self.set_piece_color(top, 1, 0, self.get_piece_color(back, 1, 0))
+            self.set_piece_color(top, 2, 0, self.get_piece_color(back, 2, 0))
+
+            #move bottom to back
+            self.set_piece_color(back, 0, 0, self.get_piece_color(bottom, 0, 0))
+            self.set_piece_color(back, 1, 0, self.get_piece_color(bottom, 1, 0))
+            self.set_piece_color(back, 2, 0, self.get_piece_color(bottom, 2, 0))
+
+            #move front to bottom
+            self.set_piece_color(bottom, 0, 0, top_left)
+            self.set_piece_color(bottom, 1, 0, mid_left)
+            self.set_piece_color(bottom, 2, 0, bottom_left)
+
+            if clockwise:
+                return
     def turn_bottom_side(self, clockwise):
         pass
 
@@ -264,8 +329,7 @@ class Piece:
 
 rubix = RubixCube()
 #rubix.set_piece_color(FaceNum.ORANGE, 1, 1, "Red")
-rubix.turn_front_side(False)
-rubix.turn_front_side(True)
+rubix.turn_left_side(False)
 print(rubix)
 #rubix.turn_side(Side.FRONT, True)
 #rubix.turn_side(Side.FRONT, True)
