@@ -94,12 +94,34 @@ class RubixCube:
             print("Invalid side \"" + side + "\" given. To turn Front side, use Side.FRONT.")
 
     def turn_front_side(self, clockwise):
+        top = self.top_face.face_color
+        left = self.left_face.face_color
+        right = self.right_face.face_color
+        bottom = self.bottom_face.face_color
         
-        self.set_piece_color(self.right_face.face_color, 0, 0, get_piece_color(self.top_face.face_color, 2, 0))
-        self.set_piece_color(self.right_face.face_color, 1, 0, get_piece_color(self.top_face.face_color, 2, 1))
-        self.set_piece_color(self.right_face.face_color, 2, 0, get_piece_color(self.top_face.face_color, 2, 2))
+        
+        
+        
+        
+        self.set_piece_color(right, 0, 0, self.get_piece_color(top, 2, 0))
+        self.set_piece_color(right, 1, 0, self.get_piece_color(top, 2, 1))
+        self.set_piece_color(right, 2, 0, self.get_piece_color(top, 2, 2))
 
-        self.set_piece_color(self.right_face.face_color, 0, 0, get_piece_color(self.top_face.face_color, 2, 0))
+        self.set_piece_color(top, 2, 0, self.get_piece_color(left, 2, 2))
+        self.set_piece_color(top, 2, 1, self.get_piece_color(left, 1, 2))
+        self.set_piece_color(top, 2, 2, self.get_piece_color(left, 0, 2))
+
+        self.set_piece_color(left, 2, 2, self.get_piece_color(bottom, 0, 2))
+        self.set_piece_color(left, 1, 2, self.get_piece_color(bottom, 0, 1))
+        self.set_piece_color(left, 0, 2, self.get_piece_color(bottom, 0, 0))
+        
+        self.set_piece_color(self.bottom_face.face_color, 0, 2, self.get_piece_color(right, 0, 0))
+        self.set_piece_color(self.bottom_face.face_color, 0, 1, self.get_piece_color(right, 1, 0))
+        self.set_piece_color(self.bottom_face.face_color, 0, 0, self.get_piece_color(right, 2, 0))
+
+        
+
+
 
     def turn_back_side(self, clockwise):
         pass
