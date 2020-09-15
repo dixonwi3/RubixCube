@@ -266,7 +266,38 @@ class RubixCube:
             if not clockwise:
                 return
     def turn_bottom_side(self, clockwise):
-        pass
+        for i in range(3):
+            left = self.left_face.face_color
+            front = self.front_face.face_color
+            back = self.back_face.face_color
+            right = self.right_face.face_color
+
+            bottom_left = self.get_piece_color(left, 2, 0)
+            bottom_mid = self.get_piece_color(left, 2, 1)
+            bottom_right = self.get_piece_color(left, 2, 2)
+
+            #move front to left
+            self.set_piece_color(left, 2, 1, self.get_piece_color(front, 2, 1))
+            self.set_piece_color(left, 2, 0, self.get_piece_color(front, 2, 0))
+            self.set_piece_color(left, 2, 2, self.get_piece_color(front, 2, 2))
+
+            #move right to front
+            self.set_piece_color(front, 2, 1, self.get_piece_color(right, 2, 1))
+            self.set_piece_color(front, 2, 0, self.get_piece_color(right, 2, 0))
+            self.set_piece_color(front, 2, 2, self.get_piece_color(right, 2, 2))
+
+            #move back to right
+            self.set_piece_color(right, 2, 1, self.get_piece_color(back, 0, 1))
+            self.set_piece_color(right, 2, 0, self.get_piece_color(back, 0, 2))
+            self.set_piece_color(right, 2, 2, self.get_piece_color(back, 0, 0))
+
+            #move left to back
+            self.set_piece_color(back, 0, 2, bottom_left)
+            self.set_piece_color(back, 0, 1, bottom_mid)
+            self.set_piece_color(back, 0, 0, bottom_right)
+
+            if not clockwise:
+                return
 
 
 
@@ -353,7 +384,7 @@ class Piece:
 
 rubix = RubixCube()
 #rubix.set_piece_color(FaceNum.ORANGE, 1, 1, "Red")
-rubix.turn_top_side(True)
+rubix.turn_bottom_side(True)
 print(rubix)
 #rubix.turn_side(Side.FRONT, True)
 #rubix.turn_side(Side.FRONT, True)
