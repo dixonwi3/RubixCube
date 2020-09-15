@@ -94,13 +94,15 @@ class RubixCube:
             print("Invalid side \"" + side + "\" given. To turn Front side, use Side.FRONT.")
 
     def turn_front_side(self, clockwise):
-        pass
+        
+        self.set_piece_color(self.right_face.face_color, 0, 0, get_piece_color(self.top_face.face_color, 2, 0))
+        self.set_piece_color(self.right_face.face_color, 1, 0, get_piece_color(self.top_face.face_color, 2, 1))
+        self.set_piece_color(self.right_face.face_color, 2, 0, get_piece_color(self.top_face.face_color, 2, 2))
+
+        self.set_piece_color(self.right_face.face_color, 0, 0, get_piece_color(self.top_face.face_color, 2, 0))
 
     def turn_back_side(self, clockwise):
-        if clockwise:
-            top_face = self.top_face.face_color
-            right_face = self.right_face
-            #self.set_piece_color(top_face, )
+        pass
     def turn_left_side(self, clockwise):
         pass
     def turn_right_side(self, clockwise):
@@ -150,6 +152,17 @@ class RubixCube:
         :return: None
         '''
         self.cube[face.value].array[i][j] = color
+    
+    def get_piece_color(self, face, i, j) -> str:
+        '''
+        Get the color of a piece on the cube.
+
+        :param FaceNum face: The face that you are targeting
+        :param int i: The row on that face
+        :param int j: The column on that face
+        :return: The color of the piece you are targeting
+        '''
+        return self.cube[face.value].array[i][j]
 
 class Face:
     def __init__(self, output_color, face_color, side):
@@ -185,7 +198,6 @@ class Piece:
 rubix = RubixCube()
 rubix.set_piece_color(FaceNum.ORANGE, 1, 1, "Red")
 print(rubix)
-rubix.turn_front_side(True)
 #rubix.turn_side(Side.FRONT, True)
 #rubix.turn_side(Side.FRONT, True)
 #print(rubix.cube[FaceNum.ORANGE.value])
