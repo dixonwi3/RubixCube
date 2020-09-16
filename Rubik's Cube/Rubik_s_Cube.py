@@ -386,6 +386,7 @@ rubix = RubixCube()
 #rubix.set_piece_color(FaceNum.ORANGE, 1, 1, "Red")
 rubix.turn_bottom_side(True)
 print(rubix)
+#asdf
 #rubix.turn_side(Side.FRONT, True)
 #rubix.turn_side(Side.FRONT, True)
 #print(rubix.cube[FaceNum.ORANGE.value])
