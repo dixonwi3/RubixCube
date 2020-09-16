@@ -1,5 +1,6 @@
 from enum import Enum
 import sys
+import random
 from sty import fg, bg, ef, rs, Style, RgbBg
 
 
@@ -8,6 +9,7 @@ bg.orange = Style(RgbBg(255, 150, 50))
 import os, sys
 if sys.platform == "win32":
     os.system('color')
+
 
 class Color(Enum):
     RED = bg.red
@@ -41,6 +43,26 @@ class Side(Enum):
     TOP = "Top"
     BOTTOM = "Bottom"
 
+controls = { "R'": (Side.RIGHT, False, 1),
+            "R":  (Side.RIGHT, True, 1), 
+            "R2":  (Side.RIGHT, True, 2), 
+            "L'": (Side.LEFT, False, 1),
+            "L":  (Side.LEFT, True, 1),
+            "L2":  (Side.LEFT, True, 2),
+            "U'": (Side.TOP, False, 1),
+            "U":  (Side.TOP, True, 1), 
+            "U2":  (Side.TOP, True, 2),
+            "B'": (Side.BACK, False, 1),
+            "B":  (Side.BACK, True, 1), 
+            "B2":  (Side.BACK, True, 2),
+            "D'": (Side.BOTTOM, False, 1),
+            "D":  (Side.BOTTOM, True, 1), 
+            "D2":  (Side.BOTTOM, True, 2), 
+            "F'": (Side.FRONT, False, 1),
+            "F":  (Side.FRONT, True, 1), 
+            "F2":  (Side.FRONT, True, 2), 
+    }
+
 class FaceNum(Enum):
     RED = 0
     GREEN = 1
@@ -70,7 +92,34 @@ class RubixCube:
         rubix_cube[FaceNum.YELLOW.value] = self.bottom_face
         return rubix_cube
 
-    def turn_side(self, side, clockwise):
+    def scramble(self):
+        num_moves = random.randint(20, 31)
+        
+        for i in range(num_moves):
+            dict_list = list(controls.items())
+            move = random.choice(dict_list)[1]
+            self.turn_side(*move)
+
+    def adjust_face(self, face, clockwise):
+        for i in range(3):
+            #set corners
+            top_left = self.get_piece_color(face, 0, 0)
+            self.set_piece_color(face, 0, 0, self.get_piece_color(face, 2, 0))
+            self.set_piece_color(face, 2, 0, self.get_piece_color(face, 2, 2))
+            self.set_piece_color(face, 2, 2, self.get_piece_color(face, 0, 2))
+            self.set_piece_color(face, 0, 2, top_left)
+
+            #set edges
+            left_mid = self.get_piece_color(face, 1, 0)
+            self.set_piece_color(face, 1, 0, self.get_piece_color(face, 2, 1))
+            self.set_piece_color(face, 2, 1, self.get_piece_color(face, 1, 2))
+            self.set_piece_color(face, 1, 2, self.get_piece_color(face, 0, 1))
+            self.set_piece_color(face, 0, 1, left_mid)
+
+            if clockwise:
+                return
+
+    def turn_side(self, side, clockwise, turns):
         '''
         Turns a face of the cube clockwise or counter-clockwise.
 
@@ -78,20 +127,27 @@ class RubixCube:
         :param boolean clockwise: Whether the turn is clockwise or counter-clockwise
         :return: None
         '''
-        if side == Side.FRONT:
-            self.turn_front_side(clockwise)
-        elif side == Side.BACK:
-            self.turn_back_side(clockwise)
-        elif side == Side.BOTTOM:
-            self.turn_bottom_side(clockwise)
-        elif side == Side.TOP:
-            self.turn_top_side(clockwise)
-        elif side == Side.LEFT:
-            self.turn_left_side(clockwise)
-        elif side == Side.RIGHT:
-            self.turn_right_side(clockwise)
-        else:
-            print("Invalid side \"" + side + "\" given. To turn Front side, use Side.FRONT.")
+        for i in range(turns):
+            if side == Side.FRONT:
+                self.turn_front_side(clockwise)
+                self.adjust_face(self.front_face.face_color, clockwise)
+            elif side == Side.BACK:
+                self.turn_back_side(clockwise)
+                self.adjust_face(self.back_face.face_color, clockwise)
+            elif side == Side.BOTTOM:
+                self.turn_bottom_side(clockwise)
+                self.adjust_face(self.bottom_face.face_color, clockwise)
+            elif side == Side.TOP:
+                self.turn_top_side(clockwise)
+                self.adjust_face(self.top_face.face_color, clockwise)
+            elif side == Side.LEFT:
+                self.turn_left_side(clockwise)
+                self.adjust_face(self.left_face.face_color, clockwise)
+            elif side == Side.RIGHT:
+                self.turn_right_side(clockwise)
+                self.adjust_face(self.right_face.face_color, clockwise)
+            else:
+                print("Invalid side \"" + side + "\" given. To turn Front side, use Side.FRONT.")
 
     def turn_front_side(self, clockwise):
         for i in range(3):
@@ -381,14 +437,32 @@ class Piece:
     def __init__(self):
         self.center = None
 
+def accept_input(rubix):
+     print(rubix)
+     move = input("Input your move (U, D, L, R, F, B, add \"'\" to spin counterclockwise): ")
+     if move.lower() == "quit":
+         return "quit"
+     try:
+        rubix.turn_side(*controls[move])
+     except:
+         print("Invalid Move. Try again")
 
-rubix = RubixCube()
-#rubix.set_piece_color(FaceNum.ORANGE, 1, 1, "Red")
-rubix.turn_bottom_side(True)
-print(rubix)
-#asdf
-#rubix.turn_side(Side.FRONT, True)
-#rubix.turn_side(Side.FRONT, True)
-#print(rubix.cube[FaceNum.ORANGE.value])
-#print(rubix.cube[FaceNum.WHITE.value].array)
-#print(str(rubix.cube[FaceNum.GREEN.value][0][0]) + "Should be: "+ str(FaceNum.GREEN.value))
+def main():
+    y = input("Welcome to the Rubix Cube Terminal Simulation! Would you like to play? (y/n):  ")
+    if y.lower() == "y":
+        print("Happy to have you!")
+    elif y.lower() =="n":
+        print("You played yourself.")
+        return 0
+    #initialize RubixCube
+    rubix = RubixCube()
+    #rubix.scramble()
+    while True:
+        response = accept_input(rubix)
+        if response == "quit":
+            print("You played yourself.")
+            return 0
+   
+
+if __name__ == "__main__":
+    main()
