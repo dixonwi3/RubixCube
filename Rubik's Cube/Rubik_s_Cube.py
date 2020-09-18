@@ -1,15 +1,74 @@
 from enum import Enum
+from PIL import Image
+from PIL import ImageFilter
+from PIL import ImageEnhance
+from IPython.display import display
+import numpy as np
+import requests
+from io import BytesIO
 import sys
 import random
+import urllib.request
+import urllib
+from bs4 import BeautifulSoup
 from sty import fg, bg, ef, rs, Style, RgbBg
-
-
-bg.orange = Style(RgbBg(255, 150, 50))
-
 import os, sys
+import cv2
+
 if sys.platform == "win32":
     os.system('color')
 
+
+class RubixAlgorithms:
+    def __init__(self):
+        # map of images from OLL page to algorithms associated with that orientation of the cube on the final layer.
+        self.algorithms = dict()
+
+    def pull_algorithm_data(self, link):
+        webUrl = urllib.request.urlopen(link)
+        html_content = webUrl.read()
+        soup = BeautifulSoup(html_content, "html.parser")
+        algorithms = []
+        images = []
+
+        for i, table in enumerate(soup.find_all("table")):
+            table_rows = table.find_all("tr")
+            for row in table_rows:
+                img = row.find_all("img")
+                cells = row.find_all("td")
+                for cell in cells:
+                    bold = str(cell.find_all("b"))
+
+                    bold = bold[4:-5]
+                    algorithms.append( bold )
+                    
+                for image in img:
+                    images.append(image.attrs["src"])
+
+        to_remove = []
+        #prune out just the algorithms
+        for algo in algorithms:
+           # algo = str(algo)
+            if not algo:
+                to_remove.append(algo)
+            if "Algorithm" in algo:
+                to_remove.append(algo)
+
+        
+        #removal process
+        for ele in to_remove:
+            algorithms.remove(ele)
+        
+        #print("Len of algorithms: " + str(len(algorithms)))
+        #print("Len of images: " + str(len(images)))
+
+        for i in range(len(algorithms)):
+            self.algorithms[images[i]] = algorithms[i]
+
+
+NUM_SCRAMBLE_MOVES = 0
+
+bg.orange = Style(RgbBg(255, 150, 50))
 
 class Color(Enum):
     RED = bg.red
@@ -81,6 +140,7 @@ class RubixCube:
         self.left_face = Face(Color.BLUE, FaceNum.BLUE, Side.LEFT)
         self.right_face = Face(Color.GREEN, FaceNum.GREEN, Side.RIGHT)
         self.cube = self.init_solved_cube()
+        self.solved_cube = None
 
     def init_solved_cube(self):
         rubix_cube = [None]*6
@@ -90,12 +150,13 @@ class RubixCube:
         rubix_cube[FaceNum.WHITE.value] = self.top_face
         rubix_cube[FaceNum.ORANGE.value] = self.front_face
         rubix_cube[FaceNum.YELLOW.value] = self.bottom_face
+        self.solved_cube = rubix_cube
         return rubix_cube
 
     def scramble(self):
         num_moves = random.randint(20, 31)
         
-        for i in range(num_moves):
+        for i in range(NUM_SCRAMBLE_MOVES):
             dict_list = list(controls.items())
             move = random.choice(dict_list)[1]
             self.turn_side(*move)
@@ -287,7 +348,6 @@ class RubixCube:
             if clockwise:
                 return
 
-
     def turn_top_side(self, clockwise):
         for i in range(3):
             left = self.left_face.face_color
@@ -321,6 +381,7 @@ class RubixCube:
 
             if not clockwise:
                 return
+
     def turn_bottom_side(self, clockwise):
         for i in range(3):
             left = self.left_face.face_color
@@ -355,8 +416,6 @@ class RubixCube:
             if not clockwise:
                 return
 
-
-
     def __str__(self):
         return   str(self.back_face) + "\n" \
                + str(self.top_face) + "\n" \
@@ -383,7 +442,6 @@ class RubixCube:
                
         return str  
 
-   
     def set_piece_color(self, face, i, j, color):
         '''
         Set the color of a piece on the cube.
@@ -447,7 +505,39 @@ def accept_input(rubix):
      except:
          print("Invalid Move. Try again")
 
+
+def open_url(url):
+    try:
+        fd = urllib.request.urlopen(url)
+        image_file = BytesIO(fd.read())
+        im = Image.open(image_file)
+        im.show()
+    except:
+        print("Invalid Image file.")
+
+    for i in range(im.width):
+        for j in range(im.height):
+            pass
+            #print(im.getpixel((i, j)))
 def main():
+    algo = RubixAlgorithms()
+    algo.pull_algorithm_data('http://www.rubiksplace.com/speedcubing/OLL-algorithms/')
+
+    print(algo.algorithms)
+    #print(algo.algorithms)
+    open_url('http://www.rubiksplace.com/speedcubing/OLL-algorithms/images/OLL-27.PNG')
+
+    #for image in algo.algorithms.keys():
+    #    img = cv2.imread(image)
+    #    print(cv2.__version__)
+    #    cv2.imshow('image', img)
+    #    cv2.waitKey(0)
+    #    cv2.destroyAllWindows()
+    #    break
+    
+
+    
+
     y = input("Welcome to the Rubix Cube Terminal Simulation! Would you like to play? (y/n):  ")
     if y.lower() == "y":
         print("Happy to have you!")
@@ -456,7 +546,7 @@ def main():
         return 0
     #initialize RubixCube
     rubix = RubixCube()
-    #rubix.scramble()
+    rubix.scramble()
     while True:
         response = accept_input(rubix)
         if response == "quit":
